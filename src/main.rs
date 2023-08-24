@@ -6,7 +6,7 @@ use shuttle_actix_web::ShuttleActixWeb;
 const NON_ASCII_IN_HEADER: &str = "Non-ASCII character(s) in the header.";
 
 #[get("/")]
-async fn hello_world(req: HttpRequest) -> Result<HttpResponse, Error> {
+async fn web_root(req: HttpRequest) -> Result<HttpResponse, Error> {
     let mut lines = Vec::with_capacity(req.headers().len() + 1);
     for (key, value) in req.headers() {
         let value = match value.to_str() {
@@ -30,7 +30,7 @@ async fn hello_world(req: HttpRequest) -> Result<HttpResponse, Error> {
 #[shuttle_runtime::main]
 async fn actix_web() -> ShuttleActixWeb<impl FnOnce(&mut ServiceConfig) + Send + Clone + 'static> {
     let config = move |cfg: &mut ServiceConfig| {
-        cfg.service(hello_world);
+        cfg.service(web_root);
     };
 
     Ok(config.into())
